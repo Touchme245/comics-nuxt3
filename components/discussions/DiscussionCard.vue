@@ -1,6 +1,6 @@
 <template>
   <div
-    class="card text-left review-card"
+    class="card text-left discussion-card"
     style="
       border-radius: 10px;
       background-color: #f9f9f9;
@@ -9,17 +9,14 @@
     "
   >
     <p class="font-bold m-2 truncate">
-      {{ review.user.username }}
+      {{ discussion.creator.username }}
     </p>
-    <p class="font-bold text-gray-500 m-2 truncate">
-      Оценка: {{ review.rating }}
-    </p>
-    <h3 class="font-bold text-gray-500 pb-2">Комментарий:</h3>
-    <p class="mb-3">{{ review.comment }}</p>
+    <h3 class="font-bold text-gray-500 pb-2">Тема:</h3>
+    <p class="mb-3">{{ discussion.text }}</p>
     <button
       v-if="
         (userInfo.role == 'ADMIN' ||
-          userInfo.username == review.user.username) &&
+          userInfo.username == discussion.creator.username) &&
         !isUpdate
       "
       class="btn"
@@ -27,13 +24,14 @@
     >
       редактировать
     </button>
+
     <div v-if="isUpdate">
-      <UpdateReviewForm :review="review" :refresh="refresh" />
+      <UpdateDiscussionForm :discussion="discussion" :refresh="refresh" />
     </div>
     <button
       v-if="
         (userInfo.role == 'ADMIN' ||
-          userInfo.username == review.user.username) &&
+          userInfo.username == discussion.creator.username) &&
         isUpdate
       "
       class="btnd btn-cancel"
@@ -41,14 +39,15 @@
     >
       отмена
     </button>
+
     <button
       v-if="
         (userInfo.role == 'ADMIN' ||
-          userInfo.username == review.user.username) &&
+          userInfo.username == discussion.creator.username) &&
         isUpdate
       "
       class="btnd btn-cancel"
-      @click="deleteReview"
+      @click="deleteDiscussion"
     >
       удалить
     </button>
@@ -56,19 +55,21 @@
 </template>
 
 <script setup>
-import UpdateReviewForm from "./reviews/UpdateReviewForm.vue";
-
-const isUpdate = ref(false);
+import UpdateDiscussionForm from "./UpdateDiscussionForm.vue";
 const token = useCookie("token");
-
-const { review, userInfo, refresh } = defineProps([
-  "review",
+const { discussion, userInfo, refresh } = defineProps([
+  "discussion",
   "userInfo",
   "refresh",
 ]);
-const deleteReviewUri = "http://localhost:8080/reviews/" + review.id;
-const deleteReview = async () => {
-  const response = await useFetch(deleteReviewUri, {
+console.log(userInfo.role);
+
+const isUpdate = ref(false);
+
+const deleteDiscussionUri =
+  "http://localhost:8080/discussions/" + discussion.id;
+const deleteDiscussion = async () => {
+  const response = await useFetch(deleteDiscussionUri, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -81,7 +82,7 @@ const deleteReview = async () => {
 </script>
 
 <style scoped>
-.review-card {
+.discussion-card {
   border: 1px solid #ccc;
   border-radius: 10px;
   margin-bottom: 20px;
@@ -98,12 +99,16 @@ const deleteReview = async () => {
   margin-left: 10px;
   transition: background-color 0.3s;
   width: 100%; /* Задаем ширину кнопки */
-  max-width: 170px; /* Максимальная ширина кнопки */
+  max-width: 200px; /* Максимальная ширина кнопки */
   display: block;
   margin-bottom: 10px;
 }
 
 .btn-cancel {
   background-color: #dc3545; /* Красный цвет для кнопки отмены */
+}
+
+.btn-cancel:hover {
+  background-color: #c82333; /* Темно-красный цвет при наведении */
 }
 </style>

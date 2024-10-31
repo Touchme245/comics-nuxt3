@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-const { group } = defineProps(["group"]);
+const { group, refresh } = defineProps(["group", "refresh"]);
 const backGroundImage =
   "https://kartinki.pics/pics/uploads/posts/2022-08/1659829707_2-kartinkin-net-p-belie-anime-oboi-krasivo-3.png";
 </script>

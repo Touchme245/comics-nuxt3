@@ -2,15 +2,30 @@
   <div>
     <GroupDetails :group="group" />
   </div>
+
+  <div class="grid grid-cols-1 gap-10">
+    <div>
+      <DiscussionsCreateDiscussionForm :id="id" :refresh="refresh" />
+    </div>
+    <div v-for="discussion in discussions">
+      <DiscussionCard
+        :discussion="discussion"
+        :userInfo="userInfo"
+        :refresh="refresh"
+      />
+    </div>
+  </div>
 </template>
 
 <script setup>
+import DiscussionCard from "~/components/discussions/DiscussionCard.vue";
 import GroupDetails from "~/components/groups/GroupDetails.vue";
 
 const { id } = useRoute().params;
 
 const uri = "http://localhost:8080/groups/" + id;
 const { data: group } = await useFetch(uri, { key: id });
+const token = useCookie("token");
 
 if (!group.value) {
   throw createError({
@@ -19,6 +34,20 @@ if (!group.value) {
     fatal: true,
   });
 }
+
+const discussionUri = "http://localhost:8080/discussions/group/" + id;
+const { data: discussions, refresh } = await useFetch(discussionUri, {
+  key: new Date().toString(),
+});
+const userInfoUri = "http://localhost:8080/users";
+const { data: userInfo } = await useFetch(userInfoUri, {
+  key: new Date().toString() + "check",
+  headers: {
+    Authorization: "Bearer " + token.value,
+  },
+});
+
+console.log(userInfo);
 </script>
 
 <style scoped></style>

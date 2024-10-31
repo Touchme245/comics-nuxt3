@@ -19,15 +19,17 @@
 </template>
 
 <script setup>
+const token = useCookie("token");
 const username = ref("");
 const password = ref("");
+const router = useRouter();
 
 const loginUri = "http://localhost:8080/auth/login";
 
 const submitForm = async () => {
   const data = {
-    username: username,
-    password: password,
+    username: username.value,
+    password: password.value,
   };
   await handleLogin(data);
 };
@@ -38,19 +40,20 @@ const handleLogin = async (data) => {
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "include",
     body: JSON.stringify(data),
   });
   const result = await response.json();
-  document.cookie = `token=${result.accessToken}; path=/; secure; SameSite=Strict`;
-  console.log(getCookie("token"));
-  router.push("/");
-};
-
-const getCookie = (name) => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(";").shift();
+  if (result.status == "BAD_REQUEST") {
+    throw createError({
+      statusCode: 400,
+      message: response.message,
+      statusMessage: response.message,
+      fatal: true,
+    });
+  }
+  token.value = result.accessToken;
+  console.log(result);
+  await router.push("/");
 };
 </script>
 

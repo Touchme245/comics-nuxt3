@@ -2,7 +2,11 @@
   <div class="card">
     <div class="grid grid-cols-2 gap-10">
       <div class="p-7">
-        <img :src="backGroundImage" alt="animeee" class="mx-auto my-7" />
+        <img
+          src="https://p4.wallpaperbetter.com/wallpaper/400/321/251/eromanga-sensei-anime-girls-izumi-sagiri-anime-wallpaper-preview.jpg"
+          alt="animeee"
+          class="mx-auto my-7"
+        />
       </div>
       <div class="p-7">
         <h2 class="text-4xl my-7">{{ comic.title }}</h2>
@@ -66,14 +70,29 @@
           </button>
         </div>
       </div>
-      <div v-if="successReview" class="mt-4 text-green-600">
-        Вы успешно оставили отзыв
-        <button
-          @click="proceedSuccess"
-          class="btn bg-red-500 px-4 py-2 rounded hover:bg-red-600"
+      <div
+        class="review-container"
+        style="
+          border-radius: 15px;
+          background-color: #ffffff;
+          padding: 20px;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        "
+      >
+        <div
+          v-if="successReview"
+          class="mt-4 text-green-600"
+          style="font-size: 16px; font-weight: bold"
         >
-          Закрыть
-        </button>
+          Вы успешно оставили отзыв
+          <button
+            @click="proceedSuccess"
+            class="btn bg-red-500 px-4 py-2 rounded hover:bg-red-600"
+            style="margin-left: 10px; transition: background-color 0.3s"
+          >
+            Закрыть
+          </button>
+        </div>
       </div>
     </div>
     <div class="text-xl">{{ comic.content }}</div>
@@ -81,7 +100,8 @@
 </template>
 
 <script setup>
-const { comic } = defineProps(["comic"]);
+const token = useCookie("token");
+const { comic, refresh } = defineProps(["comic", "refresh"]);
 
 const showForm = ref(false);
 const rating = ref(null);
@@ -91,45 +111,45 @@ const successReview = ref(false);
 
 const router = useRouter();
 
-const proceedSuccess = () => {
-  successReview = false;
-  showForm = false;
-  router.push("comic/" + comic.id);
+const proceedSuccess = async () => {
+  successReview.value = false;
+  showForm.value = false;
+  await refresh();
+  await router.push("/comics/" + comic.id);
 };
 
 const submitForm = async () => {
+  console.log(content.value);
   const data = {
     comicId: comic.id,
     rating: rating.value,
-    content: content.value,
+    comment: content.value,
   };
   await createReview(data);
 };
 
-const getCookie = (name) => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(";").shift();
-};
-
 const createReview = async (data) => {
-  const response = await fetch(createReviewUri, {
+  const response = await useFetch(createReviewUri, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + getCookie("token"),
+      Authorization: "Bearer " + token.value,
     },
-    credentials: "include",
     body: JSON.stringify(data),
   });
-  this.showForm = false;
-  this.rating = null;
-  this.reviewContent = "";
-  successReview = true;
+  if (response.error.value !== null) {
+    console.log(response);
+    throw createError({
+      statusCode: response.error.value.data.statusCode,
+      statusMessage: response.error.value.data.message,
+      fatal: true,
+    });
+  }
+  showForm.value = false;
+  rating.value = null;
+  content.value = "";
+  successReview.value = true;
 };
-
-const backGroundImage =
-  "https://p4.wallpaperbetter.com/wallpaper/400/321/251/eromanga-sensei-anime-girls-izumi-sagiri-anime-wallpaper-preview.jpg";
 </script>
 
 <style scoped>

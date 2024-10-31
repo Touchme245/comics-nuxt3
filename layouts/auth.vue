@@ -1,5 +1,5 @@
 <template>
-  <div v-if="token">
+  <div>
     <header class="shadow-sm bg-white">
       <nav class="container mx-auto flex justify-between">
         <NuxtLink to="/" class="font-bold">kuertov comics</NuxtLink>
@@ -16,9 +16,6 @@
     <div class="container mx-auto p-4">
       <slot />
     </div>
-  </div>
-  <div v-else>
-    <AuthError />
   </div>
 </template>
 

@@ -45,6 +45,7 @@ const password = ref("");
 const firstName = ref("");
 const lastName = ref("");
 const email = ref("");
+const token = useCookie("token");
 
 const router = useRouter();
 
@@ -71,15 +72,9 @@ const handleRegister = async (data) => {
     body: JSON.stringify(data),
   });
   const result = await response.json();
-  document.cookie = `token=${result.accessToken}; path=/; secure; SameSite=Strict`;
-  console.log(getCookie("token"));
-  router.push("/");
-};
-
-const getCookie = (name) => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(";").shift();
+  token.value = result.accessToken;
+  console.log(result);
+  await router.push("/");
 };
 </script>
 

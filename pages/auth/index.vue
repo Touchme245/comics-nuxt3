@@ -18,6 +18,10 @@
 import LoginForm from "~/components/auth/LoginForm.vue";
 import RegisterForm from "~/components/auth/RegisterForm.vue";
 
+definePageMeta({
+  layout: "auth",
+});
+
 const isLogin = ref(true);
 const isRegister = ref(false);
 
@@ -29,16 +33,6 @@ const showLogin = () => {
 const showRegister = () => {
   isLogin.value = false;
   isRegister.value = true;
-};
-
-const handleLogin = (data) => {
-  // Отправка данных на бэкенд для логина
-  console.log("Login data:", data);
-};
-
-const handleRegister = (data) => {
-  // Отправка данных на бэкенд для регистрации
-  console.log("Register data:", data);
 };
 </script>
 
