@@ -20,6 +20,7 @@
 <script setup>
 import DiscussionCard from "~/components/discussions/DiscussionCard.vue";
 import GroupDetails from "~/components/groups/GroupDetails.vue";
+import { useUserStore } from "@/stores";
 
 const { id } = useRoute().params;
 
@@ -39,13 +40,8 @@ const discussionUri = "http://localhost:8080/discussions/group/" + id;
 const { data: discussions, refresh } = await useFetch(discussionUri, {
   key: new Date().toString(),
 });
-const userInfoUri = "http://localhost:8080/users";
-const { data: userInfo } = await useFetch(userInfoUri, {
-  key: new Date().toString() + "check",
-  headers: {
-    Authorization: "Bearer " + token.value,
-  },
-});
+
+const { userInfo } = toRefs(useUserStore());
 
 console.log(userInfo);
 </script>

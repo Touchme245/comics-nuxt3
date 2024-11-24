@@ -111,9 +111,10 @@
 </template>
 
 <script setup>
-const { refresh, userInfo } = defineProps(["refresh", "userInfo"]);
+import { useUserStore } from "@/stores";
+const { refresh } = defineProps(["refresh"]);
 const token = useCookie("token");
-
+const { userInfo } = toRefs(useUserStore());
 const title = ref("");
 const firstName = ref("");
 const lastName = ref("");

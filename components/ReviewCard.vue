@@ -57,15 +57,14 @@
 
 <script setup>
 import UpdateReviewForm from "./reviews/UpdateReviewForm.vue";
+import { useUserStore } from "@/stores";
 
 const isUpdate = ref(false);
 const token = useCookie("token");
 
-const { review, userInfo, refresh } = defineProps([
-  "review",
-  "userInfo",
-  "refresh",
-]);
+const { review, refresh } = defineProps(["review", "refresh"]);
+
+const { userInfo } = toRefs(useUserStore());
 const deleteReviewUri = "http://localhost:8080/reviews/" + review.id;
 const deleteReview = async () => {
   const response = await useFetch(deleteReviewUri, {

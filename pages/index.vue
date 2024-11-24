@@ -2,19 +2,16 @@
   <h2>Главная</h2>
 
   <p>Платформа для увлекательного чтения</p>
-  <AdminMakeUserAuthorForm />
+  <div v-if="userInfo.role == 'ADMIN'"><AdminMakeUserAuthorForm /></div>
+  <div v-if="userInfo.role == 'ADMIN'"><AdminCreateDump /></div>
 </template>
 
 <script setup>
-const token = useCookie("token");
-const userInfoUri = "http://localhost:8080/users";
+import { useUserStore } from "@/stores";
 
-const { data: userInfo, refresh } = await useFetch(userInfoUri, {
-  key: new Date().toString() + "check",
-  headers: {
-    Authorization: "Bearer " + token.value,
-  },
-});
+const { userInfo } = toRefs(useUserStore());
+
+console.log(userInfo.role);
 </script>
 
 <style scoped>

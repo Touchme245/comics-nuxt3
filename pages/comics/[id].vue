@@ -8,15 +8,19 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
+import { useUserStore } from "@/stores";
+
 const { id } = useRoute().params;
 const token = useCookie("token");
 definePageMeta({
   layout: "default",
 });
 
+const { userInfo } = toRefs(useUserStore());
+
 const uri = "http://localhost:8080/comics/" + id;
-const { data: comic } = await useFetch(uri, { key: id });
+const { data: comic } = await useFetch(uri, { key: id.toString() });
 
 if (!comic.value) {
   throw createError({
@@ -29,14 +33,6 @@ if (!comic.value) {
 const reviewsUri = "http://localhost:8080/reviews/" + id;
 const { data: reviews, refresh } = await useFetch(reviewsUri, {
   key: new Date().toString(),
-});
-
-const userInfoUri = "http://localhost:8080/users";
-const { data: userInfo } = await useFetch(userInfoUri, {
-  key: new Date().toString() + "check",
-  headers: {
-    Authorization: "Bearer " + token.value,
-  },
 });
 
 console.log(reviews.value, comic.value);

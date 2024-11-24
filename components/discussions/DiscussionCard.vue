@@ -56,12 +56,10 @@
 
 <script setup>
 import UpdateDiscussionForm from "./UpdateDiscussionForm.vue";
+import { useUserStore } from "@/stores";
 const token = useCookie("token");
-const { discussion, userInfo, refresh } = defineProps([
-  "discussion",
-  "userInfo",
-  "refresh",
-]);
+const { discussion, refresh } = defineProps(["discussion", "refresh"]);
+const { userInfo } = toRefs(useUserStore());
 console.log(userInfo.role);
 
 const isUpdate = ref(false);
