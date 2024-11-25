@@ -58,7 +58,6 @@ const updateReview = async (data) => {
   });
 
   if (!response) {
-    console.log(response);
     throw createError({
       statusCode: 450,
       statusMessage: "что то пошло не так(",

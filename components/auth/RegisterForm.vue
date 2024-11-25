@@ -48,6 +48,7 @@ const email = ref("");
 const token = useCookie("token");
 
 const router = useRouter();
+const { getUserInfo } = useUserStore();
 
 const registerUri = "http://localhost:8080/auth/signup";
 
@@ -63,7 +64,8 @@ const submitForm = async () => {
 };
 
 const handleRegister = async (data) => {
-  const response = await fetch(registerUri, {
+  const response = await useFetch(registerUri, {
+    key: new Date().toString() + "register",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -71,9 +73,10 @@ const handleRegister = async (data) => {
     credentials: "include",
     body: JSON.stringify(data),
   });
-  const result = await response.json();
-  token.value = result.accessToken;
-  console.log(result);
+  console.log(token.value);
+  token.value = response.data.value.accessToken;
+  console.log(token.value);
+  await getUserInfo();
   await router.push("/");
 };
 </script>

@@ -24,6 +24,8 @@ const username = ref("");
 const password = ref("");
 const router = useRouter();
 
+const { getUserInfo } = useUserStore();
+
 const loginUri = "http://localhost:8080/auth/login";
 
 const submitForm = async () => {
@@ -31,19 +33,20 @@ const submitForm = async () => {
     username: username.value,
     password: password.value,
   };
+
   await handleLogin(data);
 };
 
 const handleLogin = async (data) => {
-  const response = await fetch(loginUri, {
+  const response = await useFetch(loginUri, {
+    key: new Date().toString() + "login",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
   });
-  const result = await response.json();
-  if (result.status == "BAD_REQUEST") {
+  if (response.status.value == "BAD_REQUEST") {
     throw createError({
       statusCode: 400,
       message: response.message,
@@ -51,8 +54,10 @@ const handleLogin = async (data) => {
       fatal: true,
     });
   }
-  token.value = result.accessToken;
-  console.log(result);
+  console.log(token.value);
+  token.value = response.data.value.accessToken;
+  console.log(token.value);
+  await getUserInfo();
   await router.push("/");
 };
 </script>

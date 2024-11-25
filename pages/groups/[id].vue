@@ -41,9 +41,7 @@ const { data: discussions, refresh } = await useFetch(discussionUri, {
   key: new Date().toString(),
 });
 
-const { userInfo } = toRefs(useUserStore());
-
-console.log(userInfo);
+const { userInfo } = storeToRefs(useUserStore());
 </script>
 
 <style scoped></style>

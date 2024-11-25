@@ -4,15 +4,16 @@
       <div v-for="comic in comics">
         <ComicsCard :comic="comic" />
       </div>
-      <div>
-        <CreateComicForm :refresh="refresh" :userInfo="userInfo" />
-      </div>
     </div>
+    <CreateComicForm v-if="isEditor" :refresh="refresh" :userInfo="userInfo" />
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 const token = useCookie("token");
+
+const { userInfo } = storeToRefs(useUserStore());
+
 definePageMeta({
   layout: "default",
 });
@@ -21,14 +22,9 @@ const { data: comics, refresh } = await useFetch(
   "http://localhost:8080/comics"
 );
 
-const userInfoUri = "http://localhost:8080/users";
-
-const { data: userInfo } = await useFetch(userInfoUri, {
-  key: new Date().toString() + "check",
-  headers: {
-    Authorization: "Bearer " + token.value,
-  },
-});
+const isEditor = computed(() =>
+  ["ADMIN", "AUTHOR"].includes(userInfo.value.role)
+);
 </script>
 
 <style lang="scss" scoped></style>

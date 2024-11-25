@@ -119,7 +119,6 @@ const proceedSuccess = async () => {
 };
 
 const submitForm = async () => {
-  console.log(content.value);
   const data = {
     comicId: comic.id,
     rating: rating.value,
@@ -138,7 +137,6 @@ const createReview = async (data) => {
     body: JSON.stringify(data),
   });
   if (response.error.value !== null) {
-    console.log(response);
     throw createError({
       statusCode: response.error.value.data.statusCode,
       statusMessage: response.error.value.data.message,

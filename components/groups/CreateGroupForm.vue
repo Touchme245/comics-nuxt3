@@ -65,7 +65,6 @@ const createGroup = async (data) => {
   });
   newGroup.value = false;
   if (!response) {
-    console.log(response);
     throw createError({
       statusCode: 450,
       statusMessage: "что то пошло не так(",

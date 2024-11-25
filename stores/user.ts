@@ -6,11 +6,11 @@ export const fetchUserBaseUri = "http://localhost:8080/users";
 
 export const useUserStore = defineStore(USER_NAMESPACE, () => {
   const userInfo: Ref<IUser | null> = ref(null);
+  const token = useCookie("token");
 
   const getUserInfo = async () => {
-    const token = useCookie("token");
-
     if (token.value) {
+      console.log(token.value);
       const { data } = await useFetch(fetchUserBaseUri, {
         key: new Date().toString() + "check",
         headers: {
@@ -21,6 +21,10 @@ export const useUserStore = defineStore(USER_NAMESPACE, () => {
       userInfo.value = data as unknown as IUser;
     }
   };
+
+  watch(token, async () => {
+    await getUserInfo();
+  });
 
   return {
     userInfo,

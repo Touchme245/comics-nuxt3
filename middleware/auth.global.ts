@@ -4,14 +4,15 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const token = useCookie("token");
   const userStore = useUserStore();
 
-  const { userInfo } = toRefs(userStore);
+  const { userInfo } = storeToRefs(userStore);
 
-  if (!token.value) {
+  if (!token.value && to.path !== "/auth") {
     return navigateTo("/auth");
   }
 
   if (!userInfo.value) {
     await userStore.getUserInfo();
-    return;
   }
+
+  return;
 });

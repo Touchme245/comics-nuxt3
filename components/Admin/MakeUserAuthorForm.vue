@@ -20,7 +20,6 @@
 <script setup>
 const userId = ref(null);
 const token = useCookie("token");
-console.log(userId.value);
 const { data: refresh } = defineProps("refresh");
 
 const submitForm = async () => {

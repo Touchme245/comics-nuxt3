@@ -1,0 +1,26 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:13.3
+    container_name: postgres-comics
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "comics_db"
+      POSTGRES_USER: "comics_user"
+      POSTGRES_PASSWORD: "comics_password"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ./dbdata:/var/lib/postgresql/data
+      - ./dbroot:/root
+      - ./tmp:/tmp
+  backend:
+    image: touchme245/comics:latest
+    container_name: comics-backend
+    depends_on:
+      - postgres
+    environment:
+      DB_URL: "postgres:5432"
+    ports:
+      - "8080:8080"

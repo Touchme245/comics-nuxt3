@@ -34,8 +34,6 @@ const reviewsUri = "http://localhost:8080/reviews/" + id;
 const { data: reviews, refresh } = await useFetch(reviewsUri, {
   key: new Date().toString(),
 });
-
-console.log(reviews.value, comic.value);
 </script>
 
 <style lang="scss" scoped></style>

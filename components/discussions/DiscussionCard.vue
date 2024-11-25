@@ -60,7 +60,6 @@ import { useUserStore } from "@/stores";
 const token = useCookie("token");
 const { discussion, refresh } = defineProps(["discussion", "refresh"]);
 const { userInfo } = toRefs(useUserStore());
-console.log(userInfo.role);
 
 const isUpdate = ref(false);
 

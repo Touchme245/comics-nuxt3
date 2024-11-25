@@ -10,8 +10,6 @@
 import { useUserStore } from "@/stores";
 
 const { userInfo } = toRefs(useUserStore());
-
-console.log(userInfo.role);
 </script>
 
 <style scoped>

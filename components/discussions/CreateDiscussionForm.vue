@@ -61,7 +61,6 @@ const createDiscussion = async (data) => {
   newDiscussion.value = false;
 
   if (!response) {
-    console.log(response);
     throw createError({
       statusCode: 450,
       statusMessage: "что то пошло не так(",

@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="userInfo.role == 'AUTHOR' || userInfo.role == 'ADMIN'"
-    class="card"
-  >
+  <div class="card">
     <form v-if="newComic" @submit.prevent="submitForm" class="form-container">
       <label for="title" class="form-label">Название комикса</label>
       <input
@@ -154,7 +151,6 @@ const createComic = async (data) => {
   });
   newComic.value = false;
   if (!response) {
-    console.log(response);
     throw createError({
       statusCode: 450,
       statusMessage: "что то пошло не так(",
@@ -171,7 +167,7 @@ const createComic = async (data) => {
   padding: 20px;
   background-color: #f9f9f9;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
+  max-width: 70%;
   margin: auto;
 }
 
